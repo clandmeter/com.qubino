@@ -12,23 +12,13 @@ module.exports = new ZwaveDriver(path.basename(__dirname), {
 			command_get: 'SWITCH_BINARY_GET',
 			command_set: 'SWITCH_BINARY_SET',
 			command_set_parser: (value, node) => {
-				let result = 'off/disable';
-
-				// Check correct counter value in case of idle
-				if (value === 'idle') {
-					if (node.state.position === 'on/enable') result = 'off/disable';
-					else if (node.state.position === 'off/disable') result = 'on/enable';
-				} else if (value === 'up') {
-					result = 'on/enable';
-				}
-
-				// Save latest known position state
-				if (node && node.state) {
-					node.state.position = result;
-				}
-
-				return {
-					'Switch Value': result
+				switch(value) {
+					case 'up':
+						return {'Switch Value': 'on/enable'};
+					case 'down':
+						return {'Switch Value': 'off/disable'};
+					case 'idle':
+						windowcoveringStateStop(node);
 				};
 			},
 			command_report: 'SWITCH_BINARY_REPORT',
@@ -206,3 +196,15 @@ module.exports = new ZwaveDriver(path.basename(__dirname), {
 		}
 	}
 });
+
+function windowcoveringStateStop(node) {
+	Homey.wireless('zwave').getNode( node.device_data, function( err, node ) {
+		if( err ) return console.error( err );
+		node.CommandClass.COMMAND_CLASS_SWITCH_MULTILEVEL.SWITCH_MULTILEVEL_STOP_LEVEL_CHANGE({},
+			function( err, result ){
+				if( err ) return console.error( err );
+				module.exports.realtime( node.device_data, 'windowcoverings_state', 'idle' );
+			}
+		);
+	});
+}
