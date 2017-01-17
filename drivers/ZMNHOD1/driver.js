@@ -23,13 +23,7 @@ module.exports = new ZwaveDriver(path.basename(__dirname), {
 			},
 			command_report: 'SWITCH_BINARY_REPORT',
 			command_report_parser: (report, node) => {
-
-				// Save latest known position state
-				if (node && node.state) {
-					node.state.position = report['Value']
-				}
-
-				switch (report['Value']) {
+				switch (report.Value) {
 					case 'on/enable':
 						return 'up';
 					case 'off/disable':
