@@ -29,7 +29,6 @@
 	"class": "windowcoverings",
 	"capabilities": [
 		"windowcoverings_state",
-		"onoff",
 		"dim",
 		"measure_power",
 		"meter_power",
@@ -41,12 +40,6 @@
 				"id": "ternary",
 				"capabilities": [
 					"windowcoverings_state"
-				]
-			},
-			{
-				"id": "icon",
-				"capabilities": [
-					"onoff"
 				]
 			},
 			{
