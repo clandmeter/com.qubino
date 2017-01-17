@@ -38,7 +38,6 @@ module.exports = new ZwaveDriver(path.basename(__dirname), {
 						return 'idle';
 				}
 			},
-			optional: true,
 		},
 		onoff: {
 			command_class: 'COMMAND_CLASS_SWITCH_BINARY',
@@ -93,7 +92,6 @@ module.exports = new ZwaveDriver(path.basename(__dirname), {
 				}
 				return null;
 			},
-			optional: true,
 		},
 		meter_power: {
 			command_class: 'COMMAND_CLASS_METER',
@@ -114,7 +112,6 @@ module.exports = new ZwaveDriver(path.basename(__dirname), {
 				}
 				return null;
 			},
-			optional: true,
 		},
 		measure_temperature: {
 			command_class: 'COMMAND_CLASS_SENSOR_MULTILEVEL',
