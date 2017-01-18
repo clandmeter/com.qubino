@@ -3187,7 +3187,6 @@
         "windowcoverings_state",
         "dim",
         "measure_power",
-        "meter_power",
         "measure_temperature"
       ],
       "mobile": {
@@ -3208,7 +3207,6 @@
             "id": "sensor",
             "capabilities": [
               "measure_power",
-              "meter_power",
               "measure_temperature"
             ]
           }

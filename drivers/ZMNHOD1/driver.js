@@ -55,36 +55,16 @@ module.exports = new ZwaveDriver(path.basename(__dirname), {
 			command_get: 'METER_GET',
 			command_get_parser: () => ({
 				Properties1: {
-					Scale: 7,
+					Scale: 2,
 					'Rate Type': 'Import'
 				},
-				'Scale 2': 1
+				'Scale 2': 0
 			}),
 			command_report: 'METER_REPORT',
 			command_report_parser: report => {
 				if (report.hasOwnProperty('Properties2')
 					&& report.Properties2.hasOwnProperty('Scale bits 10')
 					&& report.Properties2['Scale bits 10'] === 2) {
-					return report['Meter Value (Parsed)'];
-				}
-				return null;
-			},
-		},
-		meter_power: {
-			command_class: 'COMMAND_CLASS_METER',
-			command_get: 'METER_GET',
-			command_get_parser: () => ({
-				Properties1: {
-					Scale: 0,
-					'Rate Type': 'Import'
-				},
-				'Scale 2': 1
-			}),
-			command_report: 'METER_REPORT',
-			command_report_parser: report => {
-				if (report.hasOwnProperty('Properties2')
-					&& report.Properties2.hasOwnProperty('Scale bits 10')
-					&& report.Properties2['Scale bits 10'] === 0) {
 					return report['Meter Value (Parsed)'];
 				}
 				return null;
