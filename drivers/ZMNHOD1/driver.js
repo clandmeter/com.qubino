@@ -8,6 +8,7 @@ const ZwaveDriver = require('homey-zwavedriver');
 module.exports = new ZwaveDriver(path.basename(__dirname), {
 	capabilities: {
 		windowcoverings_state: {
+			multiChannelNodeId: 1,
 			command_class: 'COMMAND_CLASS_SWITCH_BINARY',
 			command_get: 'SWITCH_BINARY_GET',
 			command_set: 'SWITCH_BINARY_SET',
@@ -33,7 +34,8 @@ module.exports = new ZwaveDriver(path.basename(__dirname), {
 				}
 			},
 		},
-		dim: {
+		'dim.shutter': {
+			multiChannelNodeId: 1,
 			command_class: 'COMMAND_CLASS_SWITCH_MULTILEVEL',
 			command_get: 'SWITCH_MULTILEVEL_GET',
 			command_set: 'SWITCH_MULTILEVEL_SET',
@@ -50,7 +52,27 @@ module.exports = new ZwaveDriver(path.basename(__dirname), {
 				return null;
 			},
 		},
+		'dim.venetian': {
+			multiChannelNodeId: 2,
+			command_class: 'COMMAND_CLASS_SWITCH_MULTILEVEL',
+			command_get: 'SWITCH_MULTILEVEL_GET',
+			command_set: 'SWITCH_MULTILEVEL_SET',
+			command_set_parser: value => {
+				if (value >= 1) value = 0.99;
+				return {
+					Value: value * 100,
+					'Dimming Duration': 'Factory default',
+				};
+			},
+			command_report: 'SWITCH_MULTILEVEL_REPORT',
+			command_report_parser: report => {
+				if (report && report['Value (Raw)']) return report['Value (Raw)'][0] / 100;
+				return null;
+			},
+			optional: true,
+		},
 		measure_power: {
+			multiChannelNodeId: 1,
 			command_class: 'COMMAND_CLASS_METER',
 			command_get: 'METER_GET',
 			command_get_parser: () => ({
@@ -71,6 +93,7 @@ module.exports = new ZwaveDriver(path.basename(__dirname), {
 			},
 		},
 		measure_temperature: {
+			multiChannelNodeId: 3,
 			command_class: 'COMMAND_CLASS_SENSOR_MULTILEVEL',
 			command_get: 'SENSOR_MULTILEVEL_GET',
 			command_get_parser: () => ({

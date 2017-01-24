@@ -29,10 +29,23 @@
 	"class": "windowcoverings",
 	"capabilities": [
 		"windowcoverings_state",
-		"dim",
+		"dim.shutter",
+		"dim.venetian",
 		"measure_power",
 		"measure_temperature"
 	],
+	"capabilitiesOptions": {
+		"dim.shutter": {
+			"title": {
+				"en": "Shutter position"
+			}
+		},
+		"dim.venetian": {
+			"title": {
+				"en": "Slats position"
+			}
+		}
+	},
 	"mobile": {
 		"components": [
 			{
@@ -44,7 +57,13 @@
 			{
 				"id": "slider",
 				"capabilities": [
-					"dim"
+					"dim.shutter"
+				]
+			},
+			{
+				"id": "slider",
+				"capabilities": [
+					"dim.venetian"
 				]
 			},
 			{
