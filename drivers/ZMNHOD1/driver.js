@@ -183,3 +183,33 @@ function windowcoveringStateStop(DeviceData) {
 		});
 	});
 }
+
+// trigger on action flows for custom dim.shutter capability
+Homey.manager('flow').on('action.shutter_position', (callback, args) => {
+	const value = {
+		Value: (args.value >= 100) ? 99 : args.value,
+		'Dimming Duration': 'Factory default',
+	};
+	Homey.wireless('zwave').getNode(args.device, (err, node) => {
+		node.MultiChannelNodes['1'].CommandClass.COMMAND_CLASS_SWITCH_MULTILEVEL.SWITCH_MULTILEVEL_SET(value, err => {
+			if (err) return console.error(err);
+		});
+	});
+	module.exports.realtime(args.device, 'dim.shutter', args.value / 100);
+	callback(null, true);
+});
+
+// trigger on action flows for custom dim.venetian capability
+Homey.manager('flow').on('action.slats_tilt', (callback, args) => {
+	const value = {
+		Value: (args.value >= 100) ? 99 : args.value,
+		'Dimming Duration': 'Factory default',
+	};
+	Homey.wireless('zwave').getNode(args.device, (err, node) => {
+		node.MultiChannelNodes['2'].CommandClass.COMMAND_CLASS_SWITCH_MULTILEVEL.SWITCH_MULTILEVEL_SET(value, err => {
+			if (err) return console.error(err);
+		});
+	});
+	module.exports.realtime(args.device, 'dim.venetian', args.value / 100);
+	callback(null, true);
+});
