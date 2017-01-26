@@ -12,17 +12,17 @@ module.exports = new ZwaveDriver(path.basename(__dirname), {
 			command_get: 'SWITCH_BINARY_GET',
 			command_set: 'SWITCH_BINARY_SET',
 			command_set_parser: (value, node) => {
-				switch(value) {
+				switch (value) {
 					case 'up':
-						return {'Switch Value': 'on/enable'};
+						return { 'Switch Value': 'on/enable' };
 					case 'down':
-						return {'Switch Value': 'off/disable'};
-					case 'idle':
-						windowcoveringStateStop(node);
-				};
+						return { 'Switch Value': 'off/disable' };
+					default:
+						windowcoveringStateStop(node.device_data);
+				}
 			},
 			command_report: 'SWITCH_BINARY_REPORT',
-			command_report_parser: (report, node) => {
+			command_report_parser: report => {
 				switch (report.Value) {
 					case 'on/enable':
 						return 'up';
@@ -40,8 +40,8 @@ module.exports = new ZwaveDriver(path.basename(__dirname), {
 			command_set_parser: value => {
 				if (value >= 1) value = 0.99;
 				return {
-					'Value': value * 100,
-					'Dimming Duration': 'Factory default'
+					Value: value * 100,
+					'Dimming Duration': 'Factory default',
 				};
 			},
 			command_report: 'SWITCH_MULTILEVEL_REPORT',
@@ -56,9 +56,9 @@ module.exports = new ZwaveDriver(path.basename(__dirname), {
 			command_get_parser: () => ({
 				Properties1: {
 					Scale: 2,
-					'Rate Type': 'Import'
+					'Rate Type': 'Import',
 				},
-				'Scale 2': 0
+				'Scale 2': 0,
 			}),
 			command_report: 'METER_REPORT',
 			command_report_parser: report => {
@@ -147,18 +147,16 @@ module.exports = new ZwaveDriver(path.basename(__dirname), {
 		digital_temperature_sensor_reporting: {
 			index: 120,
 			size: 1,
-		}
-	}
+		},
+	},
 });
 
-function windowcoveringStateStop(node) {
-	Homey.wireless('zwave').getNode( node.device_data, function( err, node ) {
-		if( err ) return console.error( err );
-		node.CommandClass.COMMAND_CLASS_SWITCH_MULTILEVEL.SWITCH_MULTILEVEL_STOP_LEVEL_CHANGE({},
-			function( err, result ){
-				if( err ) return console.error( err );
-				module.exports.realtime( node.device_data, 'windowcoverings_state', 'idle' );
-			}
-		);
+function windowcoveringStateStop(DeviceData) {
+	Homey.wireless('zwave').getNode(DeviceData, (err, node) => {
+		if (err) return console.error(err);
+		node.CommandClass.COMMAND_CLASS_SWITCH_MULTILEVEL.SWITCH_MULTILEVEL_STOP_LEVEL_CHANGE({}, err => {
+			if (err) return console.error(err);
+			module.exports.realtime(node.device_data, 'windowcoverings_state', 'idle');
+		});
 	});
 }
